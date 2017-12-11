@@ -46,7 +46,6 @@ exports.runContainer = async (containerName) => {
 }
 
 exports.executeTestOnContainer = async (containerName, task, timeout=1000) => {
-  console.log(containerName);
   try {
     const isContainerAvailable = await exports.checkCointaier(containerName);
 
@@ -57,31 +56,33 @@ exports.executeTestOnContainer = async (containerName, task, timeout=1000) => {
     const container = docker.getContainer(containerName);
 
     const exec = await container.exec({
-        Cmd: ['bash', '-c', `node run-json '${JSON.stringify(task)}'`],
-        AttachStdout: true,
-        AttachStderr: true
-      });
-    const execSession = await exec.start();
+      Cmd: ['node', 'run-json', JSON.stringify(task)],
+      AttachStdout: true,
+      AttachStderr: true
+    });
+    const stream = await exec.start();
 
     const resultStream = new PassThrough();
+    const errorStream = new PassThrough();
 
     let output = '';
     resultStream.on('data', chunk => {
       output += chunk;
     });
 
+    let error = null;
+    errorStream.on('data', chunk => {
+      error += chunk;
+    });
+
     const result = new Promise((resolve, reject) => {
-      resultStream.on('end', () => resolve(output));
+      stream.output.on('end', () => resolve({
+        output,
+        error
+      }));
     })
 
-    // TODO:
-    // It makes test run unflexible because it always executes timeout time
-    // Rethink how to check that executing is finished
-    setTimeout(() => {
-      resultStream.destroy();
-    }, timeout);
-
-    container.modem.demuxStream(exec.output, resultStream, process.stderr);
+    container.modem.demuxStream(stream.output, resultStream, errorStream);
 
     return result;
    }
