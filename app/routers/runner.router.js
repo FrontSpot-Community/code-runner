@@ -3,8 +3,10 @@ const Joi = require('joi');
 
 const runnerTypes = require('../config/runnerTypes');
 const dockerRunner = require('../runner/dockerRunner');
+const OutputParser = require('../runner/outputParser');
 
 const router = express.Router();
+const outputParser = new OutputParser();
 
 router
   .get('/runner', (req, res, next) => {
@@ -25,7 +27,8 @@ router
 
     const { error, value } = Joi.validate(requestData, scheme, { stripUnknown: true })
 
-    if (error) next(error);
+
+    if (error) return next(error);
 
     const { runner, ...task } = value;
 
@@ -34,7 +37,16 @@ router
     dockerRunner
       .executeTestOnContainer(runnerConfig.containerName, task)
       .then((result) => {
-        res.send(result);
+        const { output, error } = result;
+        const jsonOutput = outputParser.format(output);
+
+        const status = error ? 'error' : 'completed';
+
+        res.send({
+          ...jsonOutput,
+          status,
+          executionError: error
+        });
       })
       .catch((err) => {
         next(err);
