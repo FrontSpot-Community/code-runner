@@ -27,7 +27,8 @@ router
 
     const { error, value } = Joi.validate(requestData, scheme, { stripUnknown: true })
 
-    if (error) next(error);
+
+    if (error) return next(error);
 
     const { runner, ...task } = value;
 

@@ -21,7 +21,7 @@ class OutputParser {
 
     return {
       statistics,
-      json: combinedOutput || parssedOutput,
+      json: combinedOutput || parsedOutput,
       output
     };
   }
