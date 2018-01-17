@@ -80,13 +80,10 @@ class OutputParser {
           };
           break;
         case 'passed':
-          accum[suiteIndex].tests[testIndex].status = 'passed'
-          break;
         case 'failed':
-          accum[suiteIndex].tests[testIndex].status = 'failed'
-          break;
         case 'error':
-          accum[suiteIndex].tests[testIndex].status = 'error'
+          accum[suiteIndex].tests[testIndex].status = item.name
+          accum[suiteIndex].tests[testIndex].text = item.value
           break;
         case 'time':
           if (accum[suiteIndex].tests[testIndex].time) {
