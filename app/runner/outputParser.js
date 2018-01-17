@@ -83,10 +83,10 @@ class OutputParser {
         case 'failed':
         case 'error':
           accum[suiteIndex].tests[testIndex].status = item.name
-          accum[suiteIndex].tests[testIndex].text = item.value
+          accum[suiteIndex].tests[testIndex].text = item.value || ''
           break;
         case 'time':
-          if (accum[suiteIndex].tests[testIndex].time) {
+          if (Object.prototype.hasOwnProperty.call(accum[suiteIndex].tests[testIndex], 'time')) {
             accum[suiteIndex].time = item.value;
             break;
           }
