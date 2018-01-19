@@ -12,18 +12,29 @@ class OutputParser {
     const parsedOutput = this.parse(output);
     const statistics = this.getStatistics(parsedOutput);
     let combinedOutput;
+    let time;
     try {
       combinedOutput = this.combineOutput(parsedOutput);
+      time = this.calculateTotalTime(combinedOutput);
     }
     catch(err) {
       console.log(`Cobined output parsing issue: ${err}`);
     }
 
     return {
-      statistics,
+      statistics: {
+        ...statistics,
+        time
+      },
       json: combinedOutput || parsedOutput,
       output
     };
+  }
+
+  calculateTotalTime(combinedOutput) {
+    return combinedOutput.reduce((acc, item) => {
+      return acc + item.time;
+    }, 0);
   }
 
   parse(output) {
@@ -41,12 +52,13 @@ class OutputParser {
 
   combineOutput(parsedOutput) {
     let suiteIndex = -1;
-    let testIndex = 0;
+    let testIndex = -1;
 
     return parsedOutput.reduce((accum, item) => {
       switch(item.name) {
         case 'suite':
-          suiteIndex = suiteIndex + 1;
+          suiteIndex++;
+          testIndex = -1;
           accum[suiteIndex] = {
             name: item.value,
             tests: []
@@ -61,19 +73,24 @@ class OutputParser {
             }
           }
 
+          testIndex++;
           accum[suiteIndex].tests[testIndex] = {
             name: item.value,
             status: 'unknown'
           };
           break;
         case 'passed':
-          accum[suiteIndex].tests[testIndex].status = 'passed'
-          break;
         case 'failed':
-          accum[suiteIndex].tests[testIndex].status = 'failed'
-          break;
         case 'error':
-          accum[suiteIndex].tests[testIndex].status = 'error'
+          accum[suiteIndex].tests[testIndex].status = item.name
+          accum[suiteIndex].tests[testIndex].text = item.value || ''
+          break;
+        case 'time':
+          if (Object.prototype.hasOwnProperty.call(accum[suiteIndex].tests[testIndex], 'time')) {
+            accum[suiteIndex].time = item.value;
+            break;
+          }
+          accum[suiteIndex].tests[testIndex].time = item.value
           break;
         default:
           break;
