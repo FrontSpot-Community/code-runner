@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./app",
+    "postinstall": "./bin/runContainers.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,7 +22,9 @@
     "dockerode": "^2.5.3",
     "express": "^4.16.2",
     "joi": "^13.0.2",
-    "morgan": "^1.9.0",
-    "nodemon": "^1.12.1"
+    "morgan": "^1.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.1"
   }
 }

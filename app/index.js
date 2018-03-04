@@ -8,9 +8,11 @@ const app = express();
 
 app.use(morgan('common'));
 
+const defaultPort = 3003;
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use('/', routers);
 app.use('/docs', express.static('docs'));
 app.use(errorHandler);
-app.listen(3003, listen);
+app.listen(process.env.NODE_ENV || defaultPort, listen);

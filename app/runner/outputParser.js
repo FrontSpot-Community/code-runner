@@ -101,7 +101,7 @@ class OutputParser {
 
   getStatistics(parsedOutput) {
     const initial = {
-      describe: 0,
+      suite: 0,
       test: 0,
       passed: 0,
       failed: 0,
