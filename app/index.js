@@ -15,4 +15,4 @@ app.use(bodyParser.json());
 app.use('/', routers);
 app.use('/docs', express.static('docs'));
 app.use(errorHandler);
-app.listen(process.env.NODE_ENV || defaultPort, listen);
+app.listen(process.env.PORT || defaultPort, listen);
