@@ -15,18 +15,15 @@ router
   .post('/runner', (req, res, next) => {
     const requestData = req.body;
 
-    const { NODE } = runnerTypes;
-
     const scheme = Joi.object().keys({
       runner: Joi.string().valid(Object.keys(runnerTypes)).required(),
-      language: Joi.string().valid(NODE.language).required(),
+      language: Joi.string().valid(Object.values(runnerTypes).map(i => i.language)).required(),
       code: Joi.string().required(),
       fixture: Joi.string().required(),
       testFramework: Joi.string().required()
     });
 
     const { error, value } = Joi.validate(requestData, scheme, { stripUnknown: true })
-
 
     if (error) return next(error);
 
