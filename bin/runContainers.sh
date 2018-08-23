@@ -9,6 +9,9 @@ declare -A docker_image_names=(
     # see https://github.com/Codewars/codewars-runner-cli for existing images names.
     ["code-runner-node"]="node-runner"
     ["code-runner-php"]="alt-runner"
+    ["code-runner-csharp"]="dotnet-runner"
+    ["code-runner-java"]="java-runner"
+    ["code-runner-python"]="python-runner"
 )
 
 for docker_container_name in "${!docker_image_names[@]}"; do
