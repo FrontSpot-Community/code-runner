@@ -20,7 +20,8 @@ router
       language: Joi.string().valid(Object.values(runnerTypes).map(i => i.language)).required(),
       code: Joi.string().required(),
       fixture: Joi.string().required(),
-      testFramework: Joi.string().required()
+      testFramework: Joi.string().required(),
+      languageVersion: Joi.string()
     });
 
     const { error, value } = Joi.validate(requestData, scheme, { stripUnknown: true })
