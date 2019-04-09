@@ -7,11 +7,11 @@ set -e
 declare -A docker_image_names=(
     # Container name: Docker image name from Code Wars registry
     # see https://github.com/Codewars/codewars-runner-cli for existing images names.
-    ["code-runner-node"]="node-runner"
-    ["code-runner-php"]="alt-runner"
-    ["code-runner-csharp"]="dotnet-runner"
-    ["code-runner-java"]="java-runner"
-    ["code-runner-python"]="python-runner"
+    ["code-runner-node"]="frontspot/node-runner"
+    ["code-runner-php"]="codewars/alt-runner"
+    ["code-runner-csharp"]="codewars/dotnet-runner"
+    ["code-runner-java"]="codewars/java-runner"
+    ["code-runner-python"]="codewars/python-runner"
 )
 
 for docker_container_name in "${!docker_image_names[@]}"; do
@@ -27,7 +27,7 @@ for docker_container_name in "${!docker_image_names[@]}"; do
         fi
 
         echo "Creating new ${docker_container_name} container:"
-        docker run -it -d --name="$docker_container_name" --entrypoint /bin/bash codewars/${docker_image_name}
+        docker run -it -d --name="$docker_container_name" --entrypoint /bin/bash ${docker_image_name}
         echo "Container created."
     else
       echo "Nothing to do. Container already runned."
